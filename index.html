@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Version Control Mastery with Git & GitHub · Course Hub</title>
+  <meta name="description" content="Complete sequential lecture viewer and study portal for Version Control Mastery with Git & GitHub." />
+  
+  <!-- Favicon / Fonts / Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container" id="app">
+    
+    <!-- TOP NAVBAR -->
+    <header class="navbar">
+      <div class="nav-left">
+        <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" title="Toggle Curriculum Sidebar" aria-label="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="brand">
+          <div class="brand-icon">
+            <i class="fa-brands fa-git-alt"></i>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">Git & GitHub Mastery</h1>
+            <span class="brand-subtitle">Complete Sequential Learning Hub</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-center">
+        <!-- Search bar -->
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="searchInput" placeholder="Search lessons, topics, cheatsheets... (Press /)" autocomplete="off" />
+          <button class="clear-search-btn" id="clearSearchBtn" title="Clear search" hidden>
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <span class="search-shortcut">/</span>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <!-- Progress Summary -->
+        <div class="nav-progress-wrap" id="navProgressWrap" title="Overall Course Progress">
+          <div class="progress-info">
+            <span class="progress-label">Course Progress</span>
+            <span class="progress-val" id="progressText">0 / 199 (0%)</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <button class="btn btn-primary btn-sm" id="btnContinue" title="Resume where you left off">
+          <i class="fa-solid fa-play"></i>
+          <span class="btn-text">Continue</span>
+        </button>
+
+        <button class="icon-btn" id="btnNotesDrawer" title="All My Notes">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span class="notes-badge" id="notesBadge" hidden>0</span>
+        </button>
+
+        <button class="icon-btn" id="btnShortcuts" title="Keyboard Shortcuts (?)">
+          <i class="fa-solid fa-keyboard"></i>
+        </button>
+
+        <button class="icon-btn" id="themeToggleBtn" title="Switch Theme (Dark / Light)">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <button class="icon-btn" id="btnSettings" title="Settings & Progress Backup">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="main-layout" id="mainLayout">
+      
+      <!-- STAGE / VIEWER (LEFT / MAIN) -->
+      <section class="stage-section" id="stageSection">
+        
+        <!-- Lesson Header & Breadcrumbs -->
+        <div class="stage-topbar">
+          <div class="breadcrumbs">
+            <span class="bc-module" id="bcModule">Module 01</span>
+            <i class="fa-solid fa-chevron-right bc-sep"></i>
+            <span class="bc-lesson" id="bcLesson">Loading lesson...</span>
+          </div>
+          <div class="stage-topbar-actions">
+            <button class="btn btn-ghost btn-sm" id="btnTheaterMode" title="Toggle Theater Mode (T)">
+              <i class="fa-solid fa-expand"></i>
+              <span class="btn-text">Theater Mode</span>
+            </button>
+            <a href="#" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" id="btnOpenInDrive" title="Open directly in Google Drive">
+              <i class="fa-brands fa-google-drive"></i>
+              <span class="btn-text">Open in Drive</span>
+            </a>
+            <a href="#" class="btn btn-ghost btn-sm" id="btnDownload" download title="Download this file directly">
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+              <span class="btn-text">Download</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Player / Media Viewer Container -->
+        <div class="media-container" id="mediaContainer">
+          <!-- Floating Direct Link Helper -->
+          <div class="media-external-hint" id="mediaExternalHint">
+            <a href="#" target="_blank" rel="noopener" id="mediaDirectLink" class="media-hint-btn" title="Open directly in Google Drive in new tab">
+              <i class="fa-brands fa-google-drive"></i>
+              <span>Watch in Drive</span>
+              <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
+            </a>
+          </div>
+
+          <!-- Spinner -->
+          <div class="media-loading" id="mediaLoading">
+            <div class="spinner"></div>
+            <span>Loading lecture content...</span>
+          </div>
+
+          <!-- Embed Iframe (for Google Drive Video, PDF, Quizzes, Articles) -->
+          <iframe 
+            id="mediaFrame" 
+            class="media-frame" 
+            allow="autoplay; encrypted-media; fullscreen" 
+            allowfullscreen 
+            loading="lazy">
+          </iframe>
+
+          <!-- Native HTML5 Video Element (Optional fallback) -->
+          <video id="nativeVideo" class="native-video" controls controlsList="nodownload" hidden>
+            <source src="" type="video/mp4" />
+            Your browser does not support HTML5 video.
+          </video>
+
+          <!-- Fallback / Empty State -->
+          <div class="media-empty" id="mediaEmpty" hidden>
+            <div class="empty-icon"><i class="fa-solid fa-circle-play"></i></div>
+            <h3>Select a lesson to begin learning</h3>
+            <p>Choose any lesson from the curriculum sidebar on the right.</p>
+            <button class="btn btn-primary" id="btnStartFirst">Start First Lesson</button>
+          </div>
+        </div>
+
+        <!-- Lecture Action Bar below Player -->
+        <div class="lesson-actionbar">
+          <div class="lesson-meta-info">
+            <div class="lesson-type-badge-wrap">
+              <span class="type-pill" id="lessonTypePill">
+                <i class="fa-solid fa-play"></i>
+                <span id="lessonTypeText">Video Lecture</span>
+              </span>
+              <span class="lesson-seq-badge" id="lessonSeqBadge">Lesson 1 of 199</span>
+            </div>
+            <h2 class="current-lesson-title" id="currentLessonTitle">Lesson Title</h2>
+          </div>
+
+          <div class="lesson-controls">
+            <button class="btn btn-outline" id="btnPrevLesson" title="Previous Lesson (P or Alt+Left)">
+              <i class="fa-solid fa-backward-step"></i>
+              <span>Previous</span>
+            </button>
+
+            <button class="btn btn-success" id="btnToggleComplete" title="Mark as Completed (C)">
+              <i class="fa-regular fa-circle-check" id="completeIcon"></i>
+              <span id="completeText">Mark Complete</span>
+            </button>
+
+            <button class="btn btn-outline" id="btnBookmark" title="Bookmark this lecture">
+              <i class="fa-regular fa-star" id="bookmarkIcon"></i>
+              <span id="bookmarkText">Bookmark</span>
+            </button>
+
+            <button class="btn btn-primary" id="btnNextLesson" title="Next Lesson (N or Alt+Right)">
+              <span>Next Lesson</span>
+              <i class="fa-solid fa-forward-step"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabs Section: Overview, Notes, Files -->
+        <div class="stage-tabs-wrap">
+          <div class="stage-tabs-header">
+            <button class="tab-btn active" data-tab="tabOverview">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Lesson Overview</span>
+            </button>
+            <button class="tab-btn" data-tab="tabNotes">
+              <i class="fa-solid fa-pencil"></i>
+              <span>My Notes <span class="notes-indicator" id="currentLessonNotesDot" hidden>•</span></span>
+            </button>
+            <button class="tab-btn" data-tab="tabModulesQuick">
+              <i class="fa-solid fa-folder-tree"></i>
+              <span>All Modules Overview</span>
+            </button>
+          </div>
+
+          <!-- Tab Content: Overview -->
+          <div class="tab-panel active" id="tabOverview">
+            <div class="overview-grid">
+              <div class="overview-card">
+                <h4><i class="fa-solid fa-info-circle"></i> Lecture Details</h4>
+                <div class="details-list">
+                  <div class="detail-row">
+                    <span class="dt-key">Module:</span>
+                    <span class="dt-val" id="dtModule">—</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="dt-key">Resource Type:</span>
+                    <span class="dt-val" id="dtType">—</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="dt-key">Original File:</span>
+                    <span class="dt-val font-mono" id="dtFile">—</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="dt-key">Folder Location:</span>
+                    <span class="dt-val font-mono" id="dtFolder">—</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="overview-card">
+                <h4><i class="fa-solid fa-link"></i> Access & Downloads</h4>
+                <p class="card-desc">Access high-definition streaming directly from Google Drive or download for offline learning.</p>
+                <div class="quick-links">
+                  <a href="#" target="_blank" rel="noopener" class="link-chip" id="chipDriveLink">
+                    <i class="fa-brands fa-google-drive"></i>
+                    <span>Open in Google Drive</span>
+                  </a>
+                  <a href="#" class="link-chip" id="chipDownload">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Direct Download</span>
+                  </a>
+                  <button class="link-chip" id="btnCopyLink">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Copy Lesson Link</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: Personal Notes -->
+          <div class="tab-panel" id="tabNotes">
+            <div class="notes-editor-container">
+              <div class="notes-editor-header">
+                <span class="notes-subtitle">Notes are saved automatically to your browser for this lecture.</span>
+                <div class="notes-status" id="notesSaveStatus">
+                  <i class="fa-solid fa-check"></i> All changes saved
+                </div>
+              </div>
+              <textarea 
+                id="lessonNotesTextarea" 
+                class="notes-textarea" 
+                placeholder="Write your study notes, commands, Git tips, or reminders here... (Auto-saved)"></textarea>
+              <div class="notes-editor-footer">
+                <button class="btn btn-outline btn-sm" id="btnClearNote">Clear Notes</button>
+                <button class="btn btn-primary btn-sm" id="btnSaveNoteManual">
+                  <i class="fa-solid fa-floppy-disk"></i>
+                  <span>Save Notes</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: All Modules Quick View -->
+          <div class="tab-panel" id="tabModulesQuick">
+            <div class="modules-quick-grid" id="modulesQuickGrid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- CURRICULUM SIDEBAR (RIGHT) -->
+      <aside class="sidebar-section" id="sidebarSection">
+        <div class="sidebar-header">
+          <div class="sidebar-title-row">
+            <h3 class="sidebar-title">
+              <i class="fa-solid fa-list-check"></i>
+              Course Curriculum
+            </h3>
+            <div class="sidebar-header-actions">
+              <button class="icon-btn-sm" id="btnExpandAll" title="Expand All Modules">
+                <i class="fa-solid fa-angles-down"></i>
+              </button>
+              <button class="icon-btn-sm" id="btnCollapseAll" title="Collapse All Modules">
+                <i class="fa-solid fa-angles-up"></i>
+              </button>
+              <button class="icon-btn-sm mobile-close-sidebar" id="mobileCloseSidebar" title="Close Sidebar">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter Pills -->
+          <div class="filter-pills" id="filterPills">
+            <button class="filter-pill active" data-filter="all">
+              All <span class="pill-count" id="countAll">199</span>
+            </button>
+            <button class="filter-pill" data-filter="video">
+              <i class="fa-solid fa-play"></i>
+              Videos <span class="pill-count" id="countVideo">76</span>
+            </button>
+            <button class="filter-pill" data-filter="pdf">
+              <i class="fa-solid fa-file-pdf"></i>
+              Notes <span class="pill-count" id="countPdf">83</span>
+            </button>
+            <button class="filter-pill" data-filter="quiz">
+              <i class="fa-solid fa-clipboard-question"></i>
+              Quizzes <span class="pill-count" id="countQuiz">39</span>
+            </button>
+            <button class="filter-pill" data-filter="bookmarked">
+              <i class="fa-solid fa-star"></i>
+              Saved <span class="pill-count" id="countBookmarked">0</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Curriculum Accordion List -->
+        <div class="curriculum-list" id="curriculumList">
+          <!-- Dynamically populated with modules and lesson items -->
+        </div>
+      </aside>
+
+    </main>
+
+    <!-- MODAL: ALL NOTES DRAWER -->
+    <div class="drawer-backdrop" id="notesDrawerBackdrop" style="display: none;" hidden>
+      <div class="drawer-panel" id="notesDrawerPanel">
+        <div class="drawer-header">
+          <div class="drawer-title">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <h3>My Study Notes</h3>
+          </div>
+          <div class="drawer-actions">
+            <button class="btn btn-outline btn-sm" id="btnExportNotes">
+              <i class="fa-solid fa-file-export"></i>
+              <span>Export as Markdown</span>
+            </button>
+            <button class="icon-btn-sm" id="btnCloseNotesDrawer">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+        <div class="drawer-body" id="notesDrawerBody">
+          <!-- Dynamically filled with notes list -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: KEYBOARD SHORTCUTS -->
+    <div class="modal-backdrop" id="shortcutsModal" style="display: none;" hidden>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-keyboard"></i> Keyboard Shortcuts</h3>
+          <button class="icon-btn-sm modal-close-btn" id="btnCloseShortcuts">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="shortcuts-grid">
+            <div class="shortcut-item">
+              <span class="shortcut-keys"><kbd>N</kbd> or <kbd>Alt</kbd>+<kbd>→</kbd></span>
+              <span class="shortcut-desc">Next Lesson</span>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-keys"><kbd>P</kbd> or <kbd>Alt</kbd>+<kbd>←</kbd></span>
+              <span class="shortcut-desc">Previous Lesson</span>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-keys"><kbd>C</kbd></span>
+              <span class="shortcut-desc">Toggle Mark Complete</span>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-keys"><kbd>B</kbd></span>
+              <span class="shortcut-desc">Toggle Bookmark</span>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-keys"><kbd>T</kbd></span>
+              <span class="shortcut-desc">Toggle Theater Mode</span>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-keys"><kbd>/</kbd></span>
+              <span class="shortcut-desc">Focus Search Bar</span>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-keys"><kbd>Esc</kbd></span>
+              <span class="shortcut-desc">Close Modals / Drawers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: SETTINGS & BACKUP -->
+    <div class="modal-backdrop" id="settingsModal" style="display: none;" hidden>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-gear"></i> Settings & Progress</h3>
+          <button class="icon-btn-sm modal-close-btn" id="btnCloseSettings">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="settings-group">
+            <h4><i class="fa-solid fa-database"></i> Progress Backup & Restore</h4>
+            <p class="settings-desc">Save your completed lectures, bookmarks, and notes to a JSON file so you can transfer them to another device.</p>
+            <div class="settings-actions">
+              <button class="btn btn-outline" id="btnExportProgress">
+                <i class="fa-solid fa-download"></i>
+                <span>Backup Progress (Export JSON)</span>
+              </button>
+              <label class="btn btn-outline" style="cursor: pointer;">
+                <i class="fa-solid fa-upload"></i>
+                <span>Restore Progress (Import JSON)</span>
+                <input type="file" id="importFileInput" accept=".json" style="display: none;" />
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <h4><i class="fa-solid fa-rotate-left"></i> Reset Progress</h4>
+            <p class="settings-desc">Clear all completed marks, bookmarks, and saved notes.</p>
+            <button class="btn btn-danger btn-sm" id="btnResetAllProgress">
+              <i class="fa-solid fa-trash"></i>
+              <span>Reset All Progress</span>
+            </button>
+          </div>
+
+          <div class="settings-group">
+            <h4><i class="fa-solid fa-cloud"></i> Google Drive Cloud Folder</h4>
+            <p class="settings-desc">Original shared folder with all 10 sections and raw files:</p>
+            <a href="https://drive.google.com/drive/folders/192CEvhf7ESUhp_nCacvDCHPQbKZoHofY?usp=sharing" target="_blank" rel="noopener" class="link-chip">
+              <i class="fa-brands fa-google-drive"></i>
+              <span>View Source Drive Folder</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toastNotification">
+      <i class="fa-solid fa-circle-check" id="toastIcon"></i>
+      <span id="toastMessage">Success message</span>
+    </div>
+
+  </div>
+
+  <!-- Course Data Script -->
+  <script src="course-data.js"></script>
+  <!-- Main Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
